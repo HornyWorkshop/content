@@ -7,7 +7,7 @@
   "author": "sawich",
   "license": "WTFPL",
   "dependencies": {
-    "discord.js": "^13.0.0-dev.fdad14099779e61cb84dcd1cb2497e0e853a6144",
+    "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0"
   }
