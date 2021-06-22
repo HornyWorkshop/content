@@ -27,7 +27,7 @@ type PluginAuthor = {
 }
 
 type PluginInfo = {
-    downloadUrl: string
+    url: string
 }
 
 type PluginArchs = { [key in string]: PluginInfo | null }
@@ -37,7 +37,7 @@ type PluginVersion = {
     arch: PluginArchs
 }
 
-type PluginVersions = { [key in string]: PluginVersion }
+type PluginVersions = { [key in number]: PluginVersion }
 
 type Plugin = {
     author: PluginAuthor
@@ -90,6 +90,7 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
 
         const { url } = provider
         const { data } = latestRelease
+
         const plugin = getOrCreatePlugin(plugins, data, url)
 
         if (data.tag_name in plugin.versions) {
@@ -97,7 +98,7 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
             continue;
         }
 
-        plugin.versions[data.tag_name] = {
+        plugin.versions[data.id] = {
             version: data.tag_name,
             arch: Object.fromEntries(data.assets.map(asset => {
                 let regex = /BepInEx_((?<arch>.*?))_/.exec(asset.name)
@@ -117,7 +118,7 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
                     groups.arch = 'x64'
                 }
 
-                return [groups.arch, { downloadUrl: asset.browser_download_url }]
+                return [groups.arch, { url: asset.browser_download_url }]
             }))
         }
     }
