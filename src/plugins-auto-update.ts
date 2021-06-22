@@ -95,11 +95,8 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
         const { data: dataReadme } = await client.repos.getReadme({ owner, repo })
 
         const plugin = getOrCreatePlugin(plugins, dataRelease, url)
-        if (dataReadme.download_url) 
-        {
-            console.warn('No readme');
-            plugin.readmeUrl = dataReadme.download_url
-        }
+        if (dataReadme.download_url) plugin.readmeUrl = dataReadme.download_url
+        else console.warn('No readme');
 
         if (dataRelease.tag_name in plugin.versions) {
             console.log(`skip: ${owner} / ${repo} / ${dataRelease.tag_name}`);
