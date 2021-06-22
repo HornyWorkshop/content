@@ -27,7 +27,7 @@ type PluginAuthor = {
 }
 
 type PluginInfo = {
-    url: string
+    downloadUrl: string
 }
 
 type PluginArchs = { [key in string]: PluginInfo | null }
@@ -41,6 +41,7 @@ type PluginVersions = { [key in number]: PluginVersion }
 
 type Plugin = {
     author: PluginAuthor
+    readmeUrl?: string
     versions: PluginVersions
 }
 
@@ -91,7 +92,14 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
         const { url } = provider
         const { data } = latestRelease
 
+        const { data: dataReadme } = await client.repos.getReadme({ owner, repo })
+
         const plugin = getOrCreatePlugin(plugins, data, url)
+        if (dataReadme.download_url) 
+        {
+            console.warn('No readme');
+            plugin.readmeUrl = dataReadme.download_url
+        }
 
         if (data.tag_name in plugin.versions) {
             console.log(`skip: ${owner} / ${repo} / ${data.tag_name}`);
@@ -118,7 +126,7 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
                     groups.arch = 'x64'
                 }
 
-                return [groups.arch, { url: asset.browser_download_url }]
+                return [groups.arch, { downloadUrl: asset.browser_download_url }]
             }))
         }
     }
