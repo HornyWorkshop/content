@@ -90,25 +90,25 @@ const getOrCreatePlugin = (plugins: Plugins, data: Data, url: string): Plugin =>
         }
 
         const { url } = provider
-        const { data } = latestRelease
+        const { data: dataRelease } = latestRelease
 
         const { data: dataReadme } = await client.repos.getReadme({ owner, repo })
 
-        const plugin = getOrCreatePlugin(plugins, data, url)
+        const plugin = getOrCreatePlugin(plugins, dataRelease, url)
         if (dataReadme.download_url) 
         {
             console.warn('No readme');
             plugin.readmeUrl = dataReadme.download_url
         }
 
-        if (data.tag_name in plugin.versions) {
-            console.log(`skip: ${owner} / ${repo} / ${data.tag_name}`);
+        if (dataRelease.tag_name in plugin.versions) {
+            console.log(`skip: ${owner} / ${repo} / ${dataRelease.tag_name}`);
             continue;
         }
 
-        plugin.versions[data.id] = {
-            version: data.tag_name,
-            arch: Object.fromEntries(data.assets.map(asset => {
+        plugin.versions[dataRelease.id] = {
+            version: dataRelease.tag_name,
+            arch: Object.fromEntries(dataRelease.assets.map(asset => {
                 let regex = /BepInEx_((?<arch>.*?))_/.exec(asset.name)
                 if (regex === null) {
                     console.error('Regex: null');
