@@ -27,7 +27,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Create local changes
-      run: ls
+      run: touch test.txt
     - name: Commit files
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
